@@ -11,6 +11,7 @@ import {
   Icon,
 } from "semantic-ui-react";
 import config from "../../config";
+import md5 from "md5";
 
 const Errors = ({ errors }) => {
   return (
@@ -30,6 +31,7 @@ const Register = () => {
     passwordConfirmation: "",
   });
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Validation
   const isFormEmpty = useCallback(
@@ -71,15 +73,38 @@ const Register = () => {
       [e.target.name]: e.target.value,
     }));
   }, []);
+  // Submit to firebase
   const handleSubmit = useCallback(
     (e) => {
+      e.preventDefault();
       if (isFormValid()) {
-        e.preventDefault();
+        setLoading(true);
         firebase
           .auth()
           .createUserWithEmailAndPassword(user.email, user.password)
-          .then((createdUser) => console.log(createdUser))
-          .catch((err) => console.error(err));
+          .then((createdUser) => {
+            console.log(createdUser.user);
+            createdUser.user
+              .updateProfile({
+                displayName: user.username,
+                photoURL: `http://gavatar.com/avatar/${md5(
+                  user.email
+                )}?d=identicon`,
+              })
+              .then(() => {
+                setLoading(false);
+              })
+              .catch((err) => {
+                console.error(err);
+                setErrors((prev) => prev.concat(err));
+                setLoading(false);
+              });
+          })
+          .catch((err) => {
+            console.error(err);
+            setErrors((prev) => prev.concat(err));
+            setLoading(false);
+          });
 
         setUser({
           username: "",
@@ -87,10 +112,17 @@ const Register = () => {
           password: "",
           passwordConfirmation: "",
         });
+        setErrors([]);
       }
     },
-    [user.email, user.password, isFormValid]
+    [user.email, user.password, isFormValid, user.username]
   );
+
+  const handleInputError = useCallback((errors, inputName) => {
+    return errors.some((err) => err.message.toLowerCase().includes(inputName))
+      ? "error"
+      : "";
+  }, []);
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
       <Grid.Column style={{ maxWidth: 450 }}>
@@ -109,6 +141,7 @@ const Register = () => {
               onChange={handleChange}
               type="text"
               value={user.username}
+              className={handleInputError(errors, "username")}
             />
             <Form.Input
               fluid
@@ -119,6 +152,7 @@ const Register = () => {
               onChange={handleChange}
               type="email"
               value={user.email}
+              className={handleInputError(errors, "email")}
             />
             <Form.Input
               fluid
@@ -129,6 +163,7 @@ const Register = () => {
               onChange={handleChange}
               type="password"
               value={user.password}
+              className={handleInputError(errors, "password")}
             />
             <Form.Input
               fluid
@@ -139,9 +174,16 @@ const Register = () => {
               onChange={handleChange}
               type="password"
               value={user.passwordConfirmation}
+              className={handleInputError(errors, "passwordConfirmation")}
             />
 
-            <Button color="blue" fluid size="large">
+            <Button
+              color="blue"
+              fluid
+              size="large"
+              className={loading ? "loading" : ""}
+              disabled={loading}
+            >
               Register
             </Button>
           </Segment>
@@ -149,6 +191,7 @@ const Register = () => {
 
         {errors.length > 0 && (
           <Message error>
+            <h1>Erorr</h1>
             <Errors errors={errors} />
           </Message>
         )}
