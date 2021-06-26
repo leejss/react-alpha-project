@@ -1,6 +1,4 @@
-import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import firebase from "../../firebase";
 import {
   Grid,
   Form,
@@ -12,59 +10,14 @@ import {
 } from "semantic-ui-react";
 import Errors from "../Common/Errors";
 
-const Login = () => {
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // Validation
-  const isFormValid = useCallback(() => {
-    return user.email && user.password;
-  }, [user.email, user.password]);
-
-  // Event handler
-  const handleChange = useCallback((e) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [e.target.name]: e.target.value,
-    }));
-  }, []);
-
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (isFormValid()) {
-        setLoading(true);
-        try {
-          const loginUser = await firebase
-            .auth()
-            .signInWithEmailAndPassword(user.email, user.password);
-
-          console.log("Login");
-          console.log(loginUser);
-          setErrors([]);
-          setUser({
-            email: "",
-            password: "",
-          });
-        } catch (err) {
-          setErrors((prev) => prev.concat(err));
-        }
-        setLoading(false);
-      }
-    },
-    [user.email, user.password, isFormValid]
-  );
-
-  const handleInputError = useCallback((errors, inputName) => {
-    return errors.some((err) => err.message.toLowerCase().includes(inputName))
-      ? "error"
-      : "";
-  }, []);
-
+const Login = ({
+  user,
+  loading,
+  errors,
+  handleChange,
+  handleInputError,
+  handleSubmit,
+}) => {
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
       <Grid.Column style={{ maxWidth: 450 }}>
@@ -117,7 +70,9 @@ const Login = () => {
         )}
 
         <Message>
-          New to alpha ? <Link to="/register">Create account</Link>
+          <h4>
+            <Link to="/register">Create account</Link>
+          </h4>
         </Message>
       </Grid.Column>
     </Grid>

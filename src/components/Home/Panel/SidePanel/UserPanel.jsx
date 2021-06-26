@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from "react";
-import { Dropdown, Grid, Header, Icon } from "semantic-ui-react";
-import config from "../../../config";
-import firebase from "../../../firebase";
+import { Dropdown, Grid, Header, Icon, Image } from "semantic-ui-react";
+import config from "../../../../config";
+import firebase from "../../../../firebase";
 
-const UserPanel = () => {
+const UserPanel = ({ currentUser }) => {
+  console.log(currentUser);
   const handleLogout = useCallback(async () => {
     await firebase.auth().signOut();
   }, []);
@@ -13,7 +14,8 @@ const UserPanel = () => {
         key: "user",
         text: (
           <span>
-            Signed in as <strong>User</strong>
+            Signed in as
+            <strong> {currentUser && currentUser.displayName}</strong>
           </span>
         ),
         disabled: true,
@@ -27,7 +29,7 @@ const UserPanel = () => {
         text: <span onClick={handleLogout}>Log Out</span>,
       },
     ],
-    [handleLogout]
+    [handleLogout, currentUser]
   );
 
   return (
@@ -38,11 +40,18 @@ const UserPanel = () => {
             <Icon name="at" />
             <Header.Content>{config.COMPANY_NAME}</Header.Content>
           </Header>
+          <Header inverted style={{ padding: "0.2rem" }} as="h4">
+            <Dropdown
+              trigger={
+                <span>
+                  <Image src={currentUser.photoURL} spaced="right" avatar />
+                  {currentUser.displayName}
+                </span>
+              }
+              options={dropdownOptions}
+            />
+          </Header>
         </Grid.Row>
-
-        <Header inverted style={{ padding: "0.2rem" }} as="h4">
-          <Dropdown trigger={<span>User</span>} options={dropdownOptions} />
-        </Header>
       </Grid.Column>
     </Grid>
   );

@@ -1,8 +1,9 @@
 import { Menu } from "semantic-ui-react";
-import colors from "../../../styles/colors";
+import colors from "../../../../styles/colors";
+import Channels from "./Channels";
 import UserPanel from "./UserPanel";
 
-const SidePanel = () => {
+const SidePanel = ({ currentUser }) => {
   return (
     <Menu
       size="large"
@@ -11,7 +12,8 @@ const SidePanel = () => {
       vertical
       fixed="left"
     >
-      <UserPanel />
+      <UserPanel currentUser={currentUser} />
+      <Channels />
     </Menu>
   );
 };

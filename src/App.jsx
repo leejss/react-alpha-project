@@ -1,13 +1,13 @@
 import { Route, Switch, useHistory } from "react-router-dom";
-import Login from "./components/Auth/Login";
 import "./App.css";
 import { useEffect } from "react";
 import firebase from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser, setUser } from "./modules/user";
 import Spinner from "./components/Common/Spinner";
-import Home from "./components/Home/Home";
 import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   const history = useHistory();
@@ -31,9 +31,9 @@ const App = () => {
   }
   return (
     <Switch>
-      <Route exact path="/" component={Home} />
+      <Route exact path="/" component={HomePage} />
       <Route path="/register" component={RegisterPage} />
-      <Route path="/login" component={Login} />
+      <Route path="/login" component={LoginPage} />
     </Switch>
   );
 };

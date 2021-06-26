@@ -59,7 +59,7 @@ const RegisterContainer = () => {
     async (e) => {
       e.preventDefault();
       if (isFormValid()) {
-        // setLoading(true);
+        setLoading(true);
         try {
           const createdUser = await firebase
             .auth()
