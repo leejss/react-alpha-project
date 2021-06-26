@@ -1,6 +1,4 @@
-import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import firebase from "../../firebase";
 import {
   Grid,
   Form,
@@ -11,122 +9,20 @@ import {
   Icon,
 } from "semantic-ui-react";
 import config from "../../config";
-import md5 from "md5";
+import Errors from "../Common/Errors";
 
-const Errors = ({ errors }) => {
-  return (
-    <>
-      {errors.map((err, idx) => (
-        <p key={idx}>{err.message}</p>
-      ))}
-    </>
-  );
-};
-
-const Register = () => {
-  const [user, setUser] = useState({
-    username: "",
-    email: "",
-    password: "",
-    passwordConfirmation: "",
-  });
-  const [errors, setErrors] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // Validation
-  const isFormEmpty = useCallback(
-    ({ username, email, password, passwordConfirmation }) => {
-      return !username || !email || !password || !passwordConfirmation;
-    },
-    []
-  );
-
-  const isPasswordValid = useCallback(({ password, passwordConfirmation }) => {
-    if (password.length < 6 || passwordConfirmation.length < 6) {
-      return false;
-    } else if (password !== passwordConfirmation) {
-      return false;
-    }
-    return true;
-  }, []);
-
-  const isFormValid = useCallback(() => {
-    let error;
-    if (isFormEmpty(user)) {
-      error = { message: "Fill in all fields" };
-      setErrors((prev) => prev.concat(error));
-      return false;
-    } else if (!isPasswordValid(user)) {
-      // throw Error
-      error = { message: "Password is invalid" };
-      setErrors((prev) => prev.concat(error));
-      return false;
-    } else {
-      return true;
-    }
-  }, [isFormEmpty, isPasswordValid, user]);
-
-  // Event handler
-  const handleChange = useCallback((e) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [e.target.name]: e.target.value,
-    }));
-  }, []);
-  // Submit to firebase
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (isFormValid()) {
-        setLoading(true);
-        firebase
-          .auth()
-          .createUserWithEmailAndPassword(user.email, user.password)
-          .then((createdUser) => {
-            console.log(createdUser.user);
-            createdUser.user
-              .updateProfile({
-                displayName: user.username,
-                photoURL: `http://gavatar.com/avatar/${md5(
-                  user.email
-                )}?d=identicon`,
-              })
-              .then(() => {
-                setLoading(false);
-              })
-              .catch((err) => {
-                console.error(err);
-                setErrors((prev) => prev.concat(err));
-                setLoading(false);
-              });
-          })
-          .catch((err) => {
-            console.error(err);
-            setErrors((prev) => prev.concat(err));
-            setLoading(false);
-          });
-
-        setUser({
-          username: "",
-          email: "",
-          password: "",
-          passwordConfirmation: "",
-        });
-        setErrors([]);
-      }
-    },
-    [user.email, user.password, isFormValid, user.username]
-  );
-
-  const handleInputError = useCallback((errors, inputName) => {
-    return errors.some((err) => err.message.toLowerCase().includes(inputName))
-      ? "error"
-      : "";
-  }, []);
+const Register = ({
+  user,
+  errors,
+  loading,
+  handleChange,
+  handleInputError,
+  handleSubmit,
+}) => {
   return (
     <Grid textAlign="center" verticalAlign="middle" className="app">
       <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as="h2" icon color="blue" textAlign="center">
+        <Header as="h1" icon color="blue" textAlign="center">
           <Icon name="at" color="blue" />
           <Header.Content>Register for {config.COMPANY_NAME}</Header.Content>
         </Header>

@@ -1,5 +1,5 @@
 const config = {
-  COMPANY_NAME: "alpha project",
+  COMPANY_NAME: "Alpha Project",
 };
 
 export default config;
