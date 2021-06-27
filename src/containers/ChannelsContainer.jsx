@@ -66,10 +66,11 @@ const ChannelsContainer = () => {
   );
 
   const setFirstChannel = useCallback(() => {
-    if (channels.length > 0) {
+    if (firstLoad && channels.length > 0) {
       changeChannel(channels[0]);
     }
-  }, []);
+    setFirstLoad(false);
+  }, [changeChannel, firstLoad, channels]);
 
   useEffect(() => {
     let loaded = [];
@@ -77,7 +78,8 @@ const ChannelsContainer = () => {
       loaded.push(snap.val());
       setChannels([...loaded]);
     });
-  }, []);
+    setFirstChannel();
+  }, [setFirstChannel]);
   return (
     <Channels
       channels={channels}
