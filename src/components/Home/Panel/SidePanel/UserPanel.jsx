@@ -4,7 +4,6 @@ import config from "../../../../config";
 import firebase from "../../../../firebase";
 
 const UserPanel = ({ currentUser }) => {
-  console.log(currentUser);
   const handleLogout = useCallback(async () => {
     await firebase.auth().signOut();
   }, []);
