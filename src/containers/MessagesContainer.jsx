@@ -21,7 +21,15 @@ const MessagesContainer = () => {
     try {
       if (!isContentEmpty()) {
         setLoading(true);
-        await sendMessages(currentChannel, content, currentUser);
+        const message = {
+          content,
+          user: {
+            id: currentUser.uid,
+            name: currentUser.displayName,
+            avatar: currentUser.photoURL,
+          },
+        };
+        await sendMessages(message, currentChannel.id);
         setContent("");
       } else {
         setErrors((prev) =>
@@ -37,7 +45,6 @@ const MessagesContainer = () => {
   }, [content, currentChannel, currentUser, isContentEmpty]);
 
   useEffect(() => {
-    console.log("useEffect");
     if (currentChannel) {
       let loaded = [];
       setMessages([]);
@@ -48,15 +55,57 @@ const MessagesContainer = () => {
     }
   }, [currentChannel]);
 
+  const [search, setSearch] = useState({
+    input: "",
+    loading: false,
+    results: [],
+  });
+  const handleSearch = useCallback(
+    (e) => {
+      const channelMessages = [...messages];
+      const regex = new RegExp(search.input, "gi");
+      const searchResult = channelMessages.reduce((acc, message) => {
+        if (message.content && message.content.match(regex)) {
+          acc.push(message.content);
+        }
+        return acc;
+      }, []);
+      setSearch({
+        result: searchResult,
+        loading: true,
+        input: e.target.value,
+      });
+    },
+    [search, messages]
+  );
+  // useEffect(() => {
+  //   const channelMessages = [...messages];
+  //   const regex = new RegExp(search.input, "gi");
+  //   const searchResult = channelMessages.reduce((acc, message) => {
+  //     if (message.content && message.content.match(regex)) {
+  //       acc.push(message.content);
+  //     }
+  //     return acc;
+  //   }, []);
+  //   setSearch({
+  //     ...search,
+  //     loading: false,
+  //     results: searchResult,
+  //   });
+  // }, []);
+  console.log(search.results);
+
   return (
     <Messages
-      messages={messages}
+      messages={search.results.length > 0 ? search.results : messages}
       currentUser={currentUser}
+      currentChannel={currentChannel}
       content={content}
       handleChange={handleChange}
       addMessage={addMessage}
       errors={errors}
       loading={loading}
+      handleSearch={handleSearch}
     />
   );
 };

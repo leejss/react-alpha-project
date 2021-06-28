@@ -17,20 +17,35 @@ import firebase from "../firebase";
 
 export const messagesRef = firebase.database().ref("messages");
 
-export const sendMessages = async (channel, content, user) => {
-  console.log("sendMessages");
+// export const sendMessages = async (channel, imageUrl = null, content, user) => {
+//   try {
+//     const newMessage = {
+//       user: {
+//         id: user.uid,
+//         name: user.displayName,
+//         avatar: user.photoURL,
+//       },
+//       timestamp: firebase.database.ServerValue.TIMESTAMP,
+//     };
+//     if (imageUrl) {
+//       newMessage["image"] = imageUrl;
+//     } else {
+//       newMessage["content"] = content;
+//     }
+
+//     await messagesRef.child(channel.id).push().set(newMessage);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+export const sendMessages = async (message, channelId) => {
   try {
-    const newMessage = {
-      content: content,
-      user: {
-        id: user.uid,
-        name: user.displayName,
-        avatar: user.photoURL,
-      },
+    const ms = {
+      ...message,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
-    console.log("new message", newMessage);
-    await messagesRef.child(channel.id).push().set(newMessage);
+    await messagesRef.child(channelId).push().set(ms);
   } catch (error) {
     console.error(error);
   }

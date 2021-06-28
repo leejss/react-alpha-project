@@ -7,14 +7,13 @@ const allowedFileTypes = ["image/jpeg", "image/png", "image/jpg"];
 const FileModal = ({ modal, closeModal, uploadFile }) => {
   const [file, setFile] = useState(null);
 
-  const isAllowedFile = useCallback((filename) => {
-    return allowedFileTypes.includes(mime.lookup(filename));
+  const isAllowedFile = useCallback((filetype) => {
+    return allowedFileTypes.includes(filetype);
   }, []);
 
   const sendFile = useCallback(() => {
-    console.log("send file");
-
-    if (file && isAllowedFile(file.name)) {
+    if (file && isAllowedFile(file.type)) {
+      console.log("send file");
       const metadata = {
         contentType: mime.lookup(file.name),
       };

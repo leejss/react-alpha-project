@@ -1,4 +1,4 @@
-import { Comment } from "semantic-ui-react";
+import { Comment, Image } from "semantic-ui-react";
 import moment from "moment";
 /*
     type message = {
@@ -25,8 +25,12 @@ const Message = ({ message, user }) => {
           className={isOwnMessage(message, user) ? "message__self" : ""}
         >
           <Comment.Author as="a">{message.user.name}</Comment.Author>
-          <Comment.Metadata>{timeFromNow()}</Comment.Metadata>
-          <Comment.Text>{message.content}</Comment.Text>
+          <Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
+          {message.image ? (
+            <Image src={message.image} className="message__image" />
+          ) : (
+            <Comment.Text>{message.content}</Comment.Text>
+          )}
         </Comment.Content>
       </Comment>
     );
