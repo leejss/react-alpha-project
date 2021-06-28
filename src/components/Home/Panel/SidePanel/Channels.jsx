@@ -9,6 +9,7 @@ const Channels = ({
   handleSubmit,
   channel,
   changeChannel,
+  activeChannel,
 }) => {
   return (
     <Menu.Item>
@@ -27,6 +28,7 @@ const Channels = ({
               key={ch.id}
               onClick={() => changeChannel(ch)}
               name={ch.name}
+              active={activeChannel && ch.id === activeChannel.id}
             >
               # {ch.name}
             </Menu.Item>

@@ -21,12 +21,3 @@ export const addChannel = async (channel, user) => {
     console.error(error);
   }
 };
-
-// export const loadChannels = (setChannels) => {
-//   let loaded = [];
-//   channelsRef.on("child_added", (snap) => {
-//     loaded.push(snap.val());
-//     setChannels([...loaded]);
-//     console.log("push");
-//   });
-// };

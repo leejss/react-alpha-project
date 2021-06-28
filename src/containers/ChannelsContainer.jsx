@@ -61,16 +61,10 @@ const ChannelsContainer = () => {
   const changeChannel = useCallback(
     (channel) => {
       dispatch(setCurrentChannel(channel));
+      setActiveChannel(channel);
     },
     [dispatch]
   );
-
-  const setFirstChannel = useCallback(() => {
-    if (firstLoad && channels.length > 0) {
-      changeChannel(channels[0]);
-    }
-    setFirstLoad(false);
-  }, [changeChannel, firstLoad, channels]);
 
   useEffect(() => {
     let loaded = [];
@@ -78,11 +72,20 @@ const ChannelsContainer = () => {
       loaded.push(snap.val());
       setChannels([...loaded]);
     });
-    setFirstChannel();
-  }, [setFirstChannel]);
+    return () => channelsRef.off();
+  }, []);
+
+  useEffect(() => {
+    if (firstLoad && channels.length > 0) {
+      changeChannel(channels[0]);
+      setFirstLoad(false);
+    }
+  }, [channels, changeChannel, firstLoad]);
+
   return (
     <Channels
       channels={channels}
+      activeChannel={activeChannel}
       channel={channel}
       changeChannel={changeChannel}
       modal={modal}

@@ -1,7 +1,6 @@
 import { Menu } from "semantic-ui-react";
 import ChannelsContainer from "../../../../containers/ChannelsContainer";
 import colors from "../../../../styles/colors";
-import Channels from "./Channels";
 import UserPanel from "./UserPanel";
 
 const SidePanel = ({ currentUser }) => {

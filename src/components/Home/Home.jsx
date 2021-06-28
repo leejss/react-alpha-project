@@ -1,8 +1,8 @@
 import { Grid } from "semantic-ui-react";
 import ColorPanel from "./Panel/ColorPanel";
-import Messages from "./Messages";
 import MetaPanel from "./Panel/MetaPanel";
 import SidePanel from "./Panel/SidePanel/SidePanel";
+import MessagesContainer from "../../containers/MessagesContainer";
 
 const Home = ({ currentUser }) => {
   return (
@@ -10,7 +10,7 @@ const Home = ({ currentUser }) => {
       <ColorPanel />
       <SidePanel currentUser={currentUser} />
       <Grid.Column style={{ marginLeft: 320 }}>
-        <Messages />
+        <MessagesContainer />
       </Grid.Column>
 
       <Grid.Column width={4}>
