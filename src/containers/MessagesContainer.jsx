@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Messages from "../components/Home/Messages/Messages";
 import { messagesRef, sendMessages } from "../controllers/messages";
+import { searchMessage } from "../utils";
 
 const MessagesContainer = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -60,40 +61,27 @@ const MessagesContainer = () => {
     loading: false,
     results: [],
   });
+
   const handleSearch = useCallback(
     (e) => {
-      const channelMessages = [...messages];
-      const regex = new RegExp(search.input, "gi");
-      const searchResult = channelMessages.reduce((acc, message) => {
-        if (message.content && message.content.match(regex)) {
-          acc.push(message.content);
-        }
-        return acc;
-      }, []);
+      const searchResult = searchMessage(messages, e.target.value);
       setSearch({
-        result: searchResult,
-        loading: true,
+        results: searchResult,
         input: e.target.value,
+        loading: true,
       });
     },
-    [search, messages]
+    [messages]
   );
-  // useEffect(() => {
-  //   const channelMessages = [...messages];
-  //   const regex = new RegExp(search.input, "gi");
-  //   const searchResult = channelMessages.reduce((acc, message) => {
-  //     if (message.content && message.content.match(regex)) {
-  //       acc.push(message.content);
-  //     }
-  //     return acc;
-  //   }, []);
-  //   setSearch({
-  //     ...search,
-  //     loading: false,
-  //     results: searchResult,
-  //   });
-  // }, []);
-  console.log(search.results);
+  console.log(search);
+  useCallback(() => {
+    if (!search.input) {
+      setSearch({
+        ...search,
+        loading: false,
+      });
+    }
+  }, []);
 
   return (
     <Messages
