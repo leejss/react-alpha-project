@@ -64,24 +64,23 @@ const MessagesContainer = () => {
 
   const handleSearch = useCallback(
     (e) => {
-      const searchResult = searchMessage(messages, e.target.value);
-      setSearch({
-        results: searchResult,
-        input: e.target.value,
-        loading: true,
-      });
+      if (e.target.value) {
+        const searchResult = searchMessage(messages, e.target.value);
+        setSearch({
+          results: searchResult,
+          input: e.target.value,
+          loading: true,
+        });
+      } else {
+        setSearch({
+          ...search,
+          results: [],
+          loading: false,
+        });
+      }
     },
-    [messages]
+    [messages, search]
   );
-  console.log(search);
-  useCallback(() => {
-    if (!search.input) {
-      setSearch({
-        ...search,
-        loading: false,
-      });
-    }
-  }, []);
 
   return (
     <Messages

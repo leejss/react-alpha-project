@@ -13,7 +13,7 @@ const Channels = ({
 }) => {
   return (
     <Menu.Item>
-      <Menu.Menu>
+      <Menu.Menu className="menu">
         <Menu.Item>
           <span>
             <Icon name="exchange" inverted />

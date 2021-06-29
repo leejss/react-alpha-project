@@ -3,7 +3,6 @@ import MessagesForm from "./MessagesForm";
 import MessagesHeader from "./MessagesHeader";
 import "./messages.css";
 import Message from "./Message";
-import { useCallback } from "react";
 
 const countUsers = (messages) => {
   if (messages) {

@@ -13,7 +13,7 @@ const MessagesHeader = ({ channelName, countUsers, handleSearch }) => {
     <Segment clearing>
       <Header as="h2" floated="left">
         <span>
-          {`# ${channelName}`}
+          {`# ${channelName ? channelName : "Loading..."}`}
           <Icon name="star outline" />
         </span>
         <Header.Subheader>{displayUsers(countUsers)}</Header.Subheader>
