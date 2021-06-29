@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { channelsRef } from "../controllers/channel";
+import { channelsRef } from "../database/channel";
 
 const useChannels = () => {
   const [channels, setChannels] = useState([]);

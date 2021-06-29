@@ -16,7 +16,7 @@ const SidePanel = ({ currentUser }) => {
     >
       <UserPanel currentUser={currentUser} />
       <ChannelsContainer />
-      <DirectMessages />
+      <DirectMessages currentUser={currentUser} />
     </Menu>
   );
 };

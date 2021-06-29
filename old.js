@@ -75,7 +75,7 @@ console.log(isFormEmpty(state));
 // } from "semantic-ui-react";
 // import config from "../../config";
 // import md5 from "md5";
-// import { saveUser } from "../../controllers/Auth";
+// import { saveUser } from "../../database/Auth";
 // import Errors from "../Common/Errors";
 
 // const Register = ({

@@ -4,8 +4,8 @@ import FileModal from "./FileModal";
 import "./messages.css";
 import { v4 } from "uuid";
 import { getFileExtension } from "../../../utils";
-import { storageRef } from "../../../controllers/storage";
-import { sendMessages } from "../../../controllers/messages";
+import { storageRef } from "../../../database/storage";
+import { sendMessages } from "../../../database/messages";
 
 const MessagesForm = ({
   handleChange,

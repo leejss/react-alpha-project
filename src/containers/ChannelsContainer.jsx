@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import Channels from "../components/Home/Panel/SidePanel/Channels";
-import { addChannel, channelsRef } from "../controllers/channel";
+import { addChannel, channelsRef } from "../database/channel";
 import { setCurrentChannel } from "../modules/channel";
 
 const ChannelsContainer = () => {

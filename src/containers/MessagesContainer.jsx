@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Messages from "../components/Home/Messages/Messages";
-import { messagesRef, sendMessages } from "../controllers/messages";
+import { messagesRef, sendMessages } from "../database/messages";
 import { searchMessage } from "../utils";
 
 const MessagesContainer = () => {
