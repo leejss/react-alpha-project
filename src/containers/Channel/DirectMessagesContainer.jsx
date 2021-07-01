@@ -8,13 +8,13 @@ import { setCurrentChannel, setPrivateChannel } from "../../modules/channel";
 
 const DirectMessagesContainer = () => {
   const [users, setUsers] = useState([]);
+  const [presenceList, setPresenceList] = useState([]);
   const [activeChannel, setActiveChannel] = useState("");
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     // connection check
-    console.log("connectionRef");
     connectionRef.on("value", (snap) => {
       if (snap.val()) {
         const ref = presenceRef.child(currentUser.uid);
@@ -27,54 +27,38 @@ const DirectMessagesContainer = () => {
       }
     });
 
-    
+    presenceRef.on("child_added", (snap) => {
+      let loaded = [];
+      if (currentUser.uid !== snap.key) {
+        loaded.push(snap.key);
+        setPresenceList([...loaded]);
+      }
+    });
+    presenceRef.on("child_removed", (snap) => {
+      let loaded = [];
+      if (currentUser.uid !== snap.key) {
+        loaded.push(snap.key);
+        setPresenceList([...loaded]);
+      }
+    });
   }, [currentUser.uid]);
 
   useEffect(() => {
-    console.log("userRef");
     let loaded = [];
     usersRef.on("child_added", (snap) => {
       if (currentUser.uid !== snap.key) {
         let user = snap.val();
         user["uid"] = snap.key;
-        user["status"] = "offline";
+        if (presenceList.length > 0 && presenceList.includes(snap.key)) {
+          user["status"] = "online";
+        } else {
+          user["status"] = "offline";
+        }
         loaded.push(user);
         setUsers([...loaded]);
       }
     });
-  }, [currentUser.uid]);
-
-  // const statusUpdate = useCallback(() => {
-  //   presenceRef.on("child_added", (snap) => {
-  //     if (currentUser.uid !== snap.key) {
-  //       const updatedUser = users.map((user) => {
-  //         if (user.uid === snap.key) {
-  //           user["status"] = "online";
-  //         }
-  //         return user;
-  //       });
-
-  //       setUsers([...updatedUser]);
-  //     }
-  //   });
-
-  //   presenceRef.on("child_removed", (snap) => {
-  //     if (currentUser.uid !== snap.key) {
-  //       const updatedUser = users.map((user) => {
-  //         if (user.uid === snap.key) {
-  //           user["status"] = "offline";
-  //         }
-  //         return user;
-  //       });
-
-  //       setUsers([...updatedUser]);
-  //     }
-  //   });
-  // }, [currentUser.uid]);
-
-  // useEffect(() => {
-  //   statusUpdate();
-  // }, []);
+  }, [currentUser.uid, presenceList]);
 
   const changePrivateChannel = useCallback(
     (user) => {
@@ -92,7 +76,6 @@ const DirectMessagesContainer = () => {
     },
     [currentUser.uid, dispatch]
   );
-  console.log("users", users);
   return (
     <DirectMessages
       users={users}

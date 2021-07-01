@@ -47,51 +47,6 @@ const ChannelsContainer = () => {
     [dispatch, clearNotification]
   );
 
-  const handleNotifications = (
-    channelId,
-    currentChannelId,
-    notifications,
-    snap
-  ) => {
-    let lastTotal = 0;
-    let index = notifications.findIndex(
-      (notification) => notification.id === channelId
-    );
-
-    if (index !== -1) {
-      if (channelId !== currentChannelId) {
-        lastTotal = notifications[index].total;
-        if (snap.numChildren > lastTotal) {
-          // update
-          notifications[index].count = snap.numChildren() - lastTotal;
-        }
-      }
-
-      notifications[index].lastKnownTotal = snap.numChildren();
-    } else {
-      notifications.push({
-        id: channelId,
-        total: snap.numChildren(),
-        lastKnownTotal: snap.numChildren(),
-        count: 0, // new message
-      });
-    }
-
-    setNotifications([...notifications]);
-  };
-
-  const addNotificationListener = useCallback(
-    (channelId) => {
-      // listen new message
-      messagesRef.child(channelId).on("value", (snap) => {
-        if (channel) {
-          handleNotifications(channelId, channel.id, notifications, snap);
-        }
-      });
-    },
-    [channel, notifications]
-  );
-
   function getNotificationCount(channel) {
     let count = 0;
 
@@ -108,19 +63,69 @@ const ChannelsContainer = () => {
     channelsRef.on("child_added", (snap) => {
       loaded.push(snap.val());
       setChannels([...loaded]);
-      addNotificationListener(snap.key);
+
+      let notis = [];
+      messagesRef.child(snap.key).on("value", (snap) => {
+        // snap.val() 채널 메시지
+        console.log("snap.val()", snap.val());
+        notis.push(snap.val());
+        setNotifications([...notis]);
+      });
     });
     return () => channelsRef.off();
   }, []);
 
+  // useEffect(() => {
+  //   // notification listener
+  //   if (channels) {
+  //     channels.forEach((ch) => {
+  //       const notis = [...notifications];
+  //       console.log("notis 초기", notis);
+  //       // message listener
+  //       messagesRef.child(ch.id).on("value", (snap) => {
+  //         console.log("메시지가 등록된 채널", ch.id);
+  //         console.log("channel messages", snap.val());
+  //         // listen new message
+  //         let lastTotal = 0;
+  //         let index = notifications.findIndex((noti) => noti.id === ch.id);
+  //         console.log("index", index);
+  //         if (index !== -1) {
+  //           // find matched channel
+  //           console.log("find matched");
+  //           if (ch.id !== channel.id) {
+  //             lastTotal = notis[index].total;
+  //             if (snap.numChildren() > lastTotal) {
+  //               // 안 읽은 메시지
+  //               notis[index].count = snap.numChildren() - lastTotal;
+  //             }
+  //           }
+  //           notis[index].lastKnownTotal = snap.numChildren();
+  //         } else {
+  //           // not found
+  //           console.log("notis push");
+  //           notis.push({
+  //             id: ch.id,
+  //             total: snap.numChildren(),
+  //             lastKnownTotal: snap.numChildren(),
+  //             count: 0, // new message
+  //           });
+  //         }
+
+  //         setNotifications([...notis]);
+  //       });
+  //     });
+  //   }
+  // }, [channels]);
+
   useEffect(() => {
     if (firstLoad && channels.length > 0) {
       changeChannel(channels[0]);
-      console.log("setActiveChannel");
       setActiveChannel(channels[0]);
       setFirstLoad(false);
     }
   }, [channels]);
+
+  console.log("notis", notifications);
 
   return (
     <Channels
