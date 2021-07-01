@@ -1,9 +1,9 @@
 import { Menu } from "semantic-ui-react";
-import ChannelsContainer from "../../../../containers/ChannelsContainer";
 import colors from "../../../../styles/colors";
 import UserPanel from "./UserPanel";
 import "../panel.css";
-import DirectMessages from "./DirectMessages";
+import ChannelsContainer from "../../../../containers/Channel/ChannelsContainer";
+import DirectMessagesContainer from "../../../../containers/Channel/DirectMessagesContainer";
 
 const SidePanel = ({ currentUser }) => {
   return (
@@ -16,7 +16,7 @@ const SidePanel = ({ currentUser }) => {
     >
       <UserPanel currentUser={currentUser} />
       <ChannelsContainer />
-      <DirectMessages currentUser={currentUser} />
+      <DirectMessagesContainer />
     </Menu>
   );
 };

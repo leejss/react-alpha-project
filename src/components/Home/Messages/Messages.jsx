@@ -1,8 +1,8 @@
 import { Comment, Segment } from "semantic-ui-react";
-import MessagesForm from "./MessagesForm";
 import MessagesHeader from "./MessagesHeader";
 import "./messages.css";
 import Message from "./Message";
+import MessagesFormContainer from "../../../containers/Messages/MessagesFormContainer";
 
 const countUsers = (messages) => {
   if (messages) {
@@ -17,22 +17,19 @@ const countUsers = (messages) => {
 };
 
 const Messages = ({
-  content,
-  handleChange,
-  addMessage,
-  errors,
-  loading,
   messages,
   handleSearch,
   currentUser,
   currentChannel,
+  isPrivateChannel,
 }) => {
   return (
     <>
       <MessagesHeader
-        channelName={currentChannel && currentChannel.name}
         countUsers={countUsers(messages)}
         handleSearch={handleSearch}
+        currentChannel={currentChannel && currentChannel}
+        isPrivateChannel={isPrivateChannel}
       />
       <Segment>
         <Comment.Group className="messages">
@@ -41,15 +38,7 @@ const Messages = ({
           ))}
         </Comment.Group>
       </Segment>
-      <MessagesForm
-        currentUser={currentUser}
-        currentChannel={currentChannel}
-        addMessage={addMessage}
-        handleChange={handleChange}
-        content={content}
-        errors={errors}
-        loading={loading}
-      />
+      <MessagesFormContainer />
     </>
   );
 };

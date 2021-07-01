@@ -8,13 +8,20 @@ const displayUsers = (num) => {
   }
 };
 
-const MessagesHeader = ({ channelName, countUsers, handleSearch }) => {
+const MessagesHeader = ({
+  countUsers,
+  handleSearch,
+  currentChannel,
+  isPrivateChannel,
+}) => {
   return (
     <Segment clearing>
       <Header as="h2" floated="left">
         <span>
-          {`# ${channelName ? channelName : "Loading..."}`}
-          <Icon name="star outline" />
+          {`${isPrivateChannel ? "@" : "#"} ${
+            currentChannel ? currentChannel.name : "Empty"
+          }`}
+          {!isPrivateChannel && <Icon name="star outline" />}
         </span>
         <Header.Subheader>{displayUsers(countUsers)}</Header.Subheader>
       </Header>

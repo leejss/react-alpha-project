@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import Login from "../components/Auth/Login";
-import firebase from "../firebase";
+import Login from "../../components/Auth/Login";
+import firebase from "../../firebase";
 
 const LoginContainer = () => {
   const [user, setUser] = useState({

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
-import Register from "../components/Auth/Register";
-import { saveUser } from "../database/auth";
-import firebase from "../firebase";
+import Register from "../../components/Auth/Register";
+import { saveUser } from "../../database/auth";
+import firebase from "../../firebase";
 import md5 from "md5";
 
 const RegisterContainer = () => {

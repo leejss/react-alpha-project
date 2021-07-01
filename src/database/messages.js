@@ -16,14 +16,19 @@ import firebase from "../firebase";
 */
 
 export const messagesRef = firebase.database().ref("messages");
+export const privateMessagesRef = firebase.database().ref("privateMessages");
 
-export const sendMessages = async (message, channelId) => {
+export const sendMessages = async (message, channelId, isPrivate) => {
   try {
     const ms = {
       ...message,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     };
-    await messagesRef.child(channelId).push().set(ms);
+    if (isPrivate) {
+      await privateMessagesRef.child(channelId).push().set(ms);
+    } else {
+      await messagesRef.child(channelId).push().set(ms);
+    }
   } catch (error) {
     console.error(error);
   }

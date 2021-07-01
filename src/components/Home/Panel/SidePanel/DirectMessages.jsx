@@ -1,29 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
 import { Icon, Menu } from "semantic-ui-react";
-import { getUsers, userRef } from "../../../../database/users";
 
-const DirectMessages = ({ currentUser }) => {
-  const [users, setUsers] = useState([]);
+const isUserOnline = (user) => {
+  if (user["status"] === "online") {
+    return true;
+  } else {
+    return false;
+  }
+};
 
-  const addFirebaseListener = useCallback(() => {
-    // get users
-    let loaded = [];
-    userRef.on("child_added", (snap) => {
-      if (currentUser.uid !== snap.key) {
-        let user = snap.val();
-        user["uid"] = snap.key;
-        user["status"] = "offline";
-        loaded.push(user);
-        setUsers([...loaded]);
-      }
-    });
-  }, [currentUser.uid]);
-  console.log(users);
-
-  useEffect(() => {
-    addFirebaseListener();
-  }, [addFirebaseListener]);
-
+const DirectMessages = ({ users, changePrivateChannel, activeChannel }) => {
   return (
     <Menu.Menu className="menu">
       <Menu.Item>
@@ -33,6 +18,16 @@ const DirectMessages = ({ currentUser }) => {
         </span>{" "}
         {users.length}
       </Menu.Item>
+      {users.map((user) => (
+        <Menu.Item
+          key={user.uid}
+          onClick={() => changePrivateChannel(user)}
+          active={user.uid === activeChannel}
+        >
+          <Icon name="circle" color={isUserOnline(user) ? "green" : "red"} />@{" "}
+          {user.name}
+        </Menu.Item>
+      ))}
     </Menu.Menu>
   );
 };

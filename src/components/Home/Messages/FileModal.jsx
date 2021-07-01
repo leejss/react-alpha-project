@@ -1,32 +1,6 @@
-import { useCallback, useState } from "react";
 import { Modal, Input, Button, Icon } from "semantic-ui-react";
-import mime from "mime-types";
 
-const allowedFileTypes = ["image/jpeg", "image/png", "image/jpg"];
-
-const FileModal = ({ modal, closeModal, uploadFile }) => {
-  const [file, setFile] = useState(null);
-
-  const isAllowedFile = useCallback((filetype) => {
-    return allowedFileTypes.includes(filetype);
-  }, []);
-
-  const sendFile = useCallback(() => {
-    if (file && isAllowedFile(file.type)) {
-      console.log("send file");
-      const metadata = {
-        contentType: mime.lookup(file.name),
-      };
-      uploadFile(file, metadata);
-      closeModal();
-      setFile(null);
-    }
-  }, [file, uploadFile, isAllowedFile, closeModal]);
-
-  const handleFileChange = useCallback((e) => {
-    setFile(e.target.files[0]);
-  }, []);
-
+const FileModal = ({ modal, closeModal, sendFile, handleFileChange }) => {
   return (
     <Modal basic open={modal} onClose={closeModal}>
       <Modal.Header>Select an Image File</Modal.Header>

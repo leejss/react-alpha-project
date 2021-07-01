@@ -2,7 +2,7 @@ import { Grid } from "semantic-ui-react";
 import ColorPanel from "./Panel/ColorPanel";
 import MetaPanel from "./Panel/MetaPanel";
 import SidePanel from "./Panel/SidePanel/SidePanel";
-import MessagesContainer from "../../containers/MessagesContainer";
+import MessagesContainer from "../../containers/Messages/MessagesContainer";
 
 const Home = ({ currentUser }) => {
   return (

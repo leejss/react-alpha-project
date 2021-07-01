@@ -1,3 +1,3 @@
 import firebase from "../firebase";
 
-export const userRef = firebase.database().ref("users");
+export const usersRef = firebase.database().ref("users");
