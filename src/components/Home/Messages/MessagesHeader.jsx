@@ -13,6 +13,8 @@ const MessagesHeader = ({
   handleSearch,
   currentChannel,
   isPrivateChannel,
+  handleStar,
+  isStar,
 }) => {
   return (
     <Segment clearing>
@@ -21,7 +23,13 @@ const MessagesHeader = ({
           {`${isPrivateChannel ? "@" : "#"} ${
             currentChannel ? currentChannel.name : "Empty"
           }`}
-          {!isPrivateChannel && <Icon name="star outline" />}
+          {!isPrivateChannel && (
+            <Icon
+              onClick={handleStar}
+              name={isStar ? "star" : "star outline"}
+              color={isStar ? "yellow" : "black"}
+            />
+          )}
         </span>
         <Header.Subheader>{displayUsers(countUsers)}</Header.Subheader>
       </Header>

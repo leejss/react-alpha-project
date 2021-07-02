@@ -8,6 +8,7 @@ const MessagesForm = ({
   content,
   errors,
   loading,
+  handleKeyDown
 }) => {
   const [modal, setModal] = useState(false);
   const openModal = useCallback(() => {
@@ -31,6 +32,7 @@ const MessagesForm = ({
         labelPosition="left"
         placeholder="write your message"
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         className={errors.length > 0 ? "error" : ""}
       />
       <Button.Group icon widths="2">

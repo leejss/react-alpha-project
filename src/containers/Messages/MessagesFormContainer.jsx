@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import MessagesForm from "../../components/Home/Messages/MessagesForm";
 import { sendMessages } from "../../database/messages";
+import firebase from "../../firebase";
 
 const MessagesFormContainer = () => {
   const { currentChannel, isPrivateChannel } = useSelector(
@@ -11,6 +12,15 @@ const MessagesFormContainer = () => {
   const [content, setContent] = useState("");
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const ref = useRef(null);
+  if (currentChannel && currentUser) {
+    ref.current = firebase
+      .database()
+      .ref("typing")
+      .child(currentChannel.id)
+      .child(currentUser.uid);
+  }
+
   const handleChange = useCallback((e) => {
     setContent(e.target.value);
   }, []);
@@ -28,6 +38,7 @@ const MessagesFormContainer = () => {
         };
         await sendMessages(message, currentChannel.id, isPrivateChannel);
         setContent("");
+        ref.current.remove();
       } else {
         setErrors((prev) =>
           prev.concat({
@@ -40,6 +51,20 @@ const MessagesFormContainer = () => {
     }
     setLoading(false);
   }, [content, currentChannel, currentUser, isPrivateChannel]);
+
+  const handleKeyDown = () => {
+    const typingRef = firebase.database().ref("typing");
+    if (currentUser && currentChannel) {
+      const ref = typingRef.child(currentChannel.id).child(currentUser.uid);
+      if (content) {
+        ref.set(currentUser.displayName);
+      } else {
+        console.log("ref remove");
+        ref.remove();
+      }
+    }
+  };
+
   return (
     <MessagesForm
       currentChannel={currentChannel}
@@ -50,6 +75,7 @@ const MessagesFormContainer = () => {
       loading={loading}
       handleChange={handleChange}
       addMessage={addMessage}
+      handleKeyDown={handleKeyDown}
     />
   );
 };

@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Channels from "../../components/Home/Panel/SidePanel/Channels";
 import { channelsRef } from "../../database/channel";
 import { messagesRef } from "../../database/messages";
 import { setCurrentChannel, setPrivateChannel } from "../../modules/channel";
+import firebase from "../../firebase";
 
 const ChannelsContainer = () => {
   const [channels, setChannels] = useState([]);
@@ -13,6 +14,16 @@ const ChannelsContainer = () => {
   const [channel, setChannel] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
+  const { currentChannel } = useSelector((state) => state.channel);
+  const ref = useRef(null);
+  if (currentChannel && currentUser) {
+    ref.current = firebase
+      .database()
+      .ref("typing")
+      .child(currentChannel.id)
+      .child(currentUser.uid);
+  }
 
   const openModal = useCallback(() => {
     setModal(true);
@@ -43,6 +54,7 @@ const ChannelsContainer = () => {
       dispatch(setPrivateChannel(false));
       setActiveChannel(channel);
       setChannel(channel);
+      ref.current.remove();
     },
     [dispatch, clearNotification]
   );
@@ -67,7 +79,7 @@ const ChannelsContainer = () => {
       let notis = [];
       messagesRef.child(snap.key).on("value", (snap) => {
         // snap.val() 채널 메시지
-        console.log("snap.val()", snap.val());
+
         notis.push(snap.val());
         setNotifications([...notis]);
       });
@@ -124,8 +136,6 @@ const ChannelsContainer = () => {
       setFirstLoad(false);
     }
   }, [channels]);
-
-  console.log("notis", notifications);
 
   return (
     <Channels

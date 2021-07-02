@@ -4,6 +4,7 @@ import UserPanel from "./UserPanel";
 import "../panel.css";
 import ChannelsContainer from "../../../../containers/Channel/ChannelsContainer";
 import DirectMessagesContainer from "../../../../containers/Channel/DirectMessagesContainer";
+import StarredContainer from "../../../../containers/Channel/StarredContainer";
 
 const SidePanel = ({ currentUser }) => {
   return (
@@ -15,6 +16,7 @@ const SidePanel = ({ currentUser }) => {
       fixed="left"
     >
       <UserPanel currentUser={currentUser} />
+      <StarredContainer />
       <ChannelsContainer />
       <DirectMessagesContainer />
     </Menu>

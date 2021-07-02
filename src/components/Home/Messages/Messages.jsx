@@ -22,6 +22,8 @@ const Messages = ({
   currentUser,
   currentChannel,
   isPrivateChannel,
+  handleStar,
+  isStar
 }) => {
   return (
     <>
@@ -30,6 +32,8 @@ const Messages = ({
         handleSearch={handleSearch}
         currentChannel={currentChannel && currentChannel}
         isPrivateChannel={isPrivateChannel}
+        handleStar={handleStar}
+        isStar={isStar}
       />
       <Segment>
         <Comment.Group className="messages">
